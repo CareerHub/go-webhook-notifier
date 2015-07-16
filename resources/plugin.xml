@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<go-plugin id="email.notifier" version="1">
+    <about>
+        <name>WebHook Notification plugin</name>
+        <version>0.1</version>
+        <target-go-version>15.1.0</target-go-version>
+        <description>Plugin to notifications of stage statuses via web hooks</description>
+        <vendor>
+            <name>Srinivas</name>
+            <url>https://github.com/careerhub/gocd-webhook-notifier</url>
+        </vendor>
+    </about>
+</go-plugin>
