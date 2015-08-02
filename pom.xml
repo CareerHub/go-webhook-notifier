@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.careerhub.go</groupId>
-    <artifactId>webook-notifier</artifactId>
+    <artifactId>webhook-notifier</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
 
