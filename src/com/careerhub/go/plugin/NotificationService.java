@@ -33,10 +33,15 @@ public class NotificationService {
         
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost request = new HttpPost(callbackUrl);  
-        
+
+		request.setHeader("Content-Type", "application/json");
+
+		// Could process json and parse processed json on
+		// However, at this stage their is no need
+		// Just pass on as is.
         String json = JSONUtils.toJSON(info);
     	    	
-    	StringEntity jsonEntity =new StringEntity(json);
+    	StringEntity jsonEntity = new StringEntity(json);
      
     	request.setEntity(jsonEntity);
         
