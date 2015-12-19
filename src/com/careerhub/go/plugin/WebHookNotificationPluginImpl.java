@@ -7,6 +7,9 @@ import com.thoughtworks.go.plugin.api.GoApplicationAccessor;
 import com.thoughtworks.go.plugin.api.GoPlugin;
 import com.thoughtworks.go.plugin.api.GoPluginIdentifier;
 import com.thoughtworks.go.plugin.api.annotation.Extension;
+import com.thoughtworks.go.plugin.api.annotation.Load;
+import com.thoughtworks.go.plugin.api.annotation.UnLoad;
+import com.thoughtworks.go.plugin.api.info.PluginContext;
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.request.GoPluginApiRequest;
 import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
@@ -14,7 +17,7 @@ import com.thoughtworks.go.plugin.api.response.GoPluginApiResponse;
 import java.io.IOException;
 import java.util.*;
 
-@Extension
+@com.thoughtworks.go.plugin.api.annotation.Extension
 public class WebHookNotificationPluginImpl implements GoPlugin {
     private static Logger LOGGER = Logger.getLoggerFor(WebHookNotificationPluginImpl.class);
 
@@ -30,6 +33,15 @@ public class WebHookNotificationPluginImpl implements GoPlugin {
 		this.notificationService = new NotificationService();
 	}
     
+    @Load
+    public void onLoad(PluginContext context) {
+    	LOGGER.info("Plugin loaded");
+    }
+    
+    @UnLoad
+    public void onUnload(PluginContext context) {
+    	LOGGER.info("Plugin unloaded");
+    }
 
     @Override
     public void initializeGoApplicationAccessor(GoApplicationAccessor goApplicationAccessor) {
@@ -40,13 +52,19 @@ public class WebHookNotificationPluginImpl implements GoPlugin {
     public GoPluginApiResponse handle(GoPluginApiRequest goPluginApiRequest) {
         String requestName = goPluginApiRequest.requestName();
         
+        LOGGER.warn(String.format("Received request with name %s", requestName));
+        
         if (requestName.equals(Constants.PLUGIN_SETTINGS_GET_CONFIGURATION)) {
             return handleGetPluginSettingsConfiguration();
         } else if (requestName.equals(Constants.PLUGIN_SETTINGS_GET_VIEW)) {
             try {
                 return handleGetPluginSettingsView();
             } catch (IOException e) {
-                return renderJSON(500, String.format("Failed to find template: %s", e.getMessage()));
+            	String message = String.format("Failed to find template: %s", e.getMessage());
+            	
+                LOGGER.warn(message);
+                
+                return renderJSON(500, message);
             }
         } else if (requestName.equals(Constants.PLUGIN_SETTINGS_VALIDATE_CONFIGURATION)) {
             return handleValidatePluginSettingsConfiguration(goPluginApiRequest);
@@ -71,7 +89,7 @@ public class WebHookNotificationPluginImpl implements GoPlugin {
     }
 
     private GoPluginApiResponse handleStageNotification(GoPluginApiRequest goPluginApiRequest) {
-        Map<String, Object> dataMap = (Map<String, Object>) JSONUtils.fromJSON(goPluginApiRequest.requestBody());
+        Map<String, Object> dataMap = getJsonMap(goPluginApiRequest);
 
         int responseCode = Constants.SUCCESS_RESPONSE_CODE;
         Map<String, Object> response = new HashMap<String, Object>();
@@ -87,7 +105,7 @@ public class WebHookNotificationPluginImpl implements GoPlugin {
         		response.put("status", "failure");        		
         	}
         } catch (Exception e) {
-            LOGGER.warn("Error occurred while trying to deliver an email.", e);
+            LOGGER.error("Error occurred while trying to send a webhook notification", e);
 
             responseCode = Constants.INTERNAL_ERROR_RESPONSE_CODE;
             response.put("status", "failure");
@@ -103,13 +121,17 @@ public class WebHookNotificationPluginImpl implements GoPlugin {
     }
     
 
-    private GoPluginApiResponse handleGetPluginSettingsConfiguration() {    	
+    private GoPluginApiResponse handleGetPluginSettingsConfiguration() {
+        LOGGER.warn("Handling plugin setting request");
+        
     	Map<String, Object> fields = this.configurationService.getFields();
     	
         return renderJSON(Constants.SUCCESS_RESPONSE_CODE, fields);
     }
     
     private GoPluginApiResponse handleGetPluginSettingsView() throws IOException {
+        LOGGER.debug("Handling plugin view request");
+        
     	Map<String, Object> response = this.configurationService.getTemplateSettings();
     	
         return renderJSON(Constants.SUCCESS_RESPONSE_CODE, response);
@@ -117,21 +139,35 @@ public class WebHookNotificationPluginImpl implements GoPlugin {
     
 
     private GoPluginApiResponse handleValidatePluginSettingsConfiguration(GoPluginApiRequest goPluginApiRequest) {
-        final Map<String, Object> responseMap = (Map<String, Object>) JSONUtils.fromJSON(goPluginApiRequest.requestBody());
+    	final Map<String, Object> responseMap = getJsonMap(goPluginApiRequest);
+    	
         final Map<String, String> configuration = MapUtils.toKeyValuePairs(responseMap, "plugin-settings");
         
         final List<Map<String, Object>> response = this.configurationService.validateFields(configuration);
         
         return renderJSON(Constants.SUCCESS_RESPONSE_CODE, response);
     }
-
     
     private boolean isEmpty(String str) {
         return str == null || str.trim().isEmpty();
     }
-    
+
+
+	private Map<String, Object> getJsonMap(GoPluginApiRequest goPluginApiRequest) {
+		final String jsonBody = goPluginApiRequest.requestBody();
+    	
+    	LOGGER.warn(String.format("Received json request name %s message: %s", goPluginApiRequest.requestName(), jsonBody));
+    	
+        final Map<String, Object> responseMap = (Map<String, Object>) JSONUtils.fromJSON(jsonBody);
+		return responseMap;
+	}
+
+	
     private GoPluginApiResponse renderJSON(final int responseCode, Object response) {
         final String json = response == null ? null : new GsonBuilder().create().toJson(response);
+        
+        LOGGER.warn(String.format("Responding with status %d and message: %s", responseCode, json));
+        
         return new GoPluginApiResponse() {
             @Override
             public int responseCode() {

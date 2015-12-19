@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.careerhub.go</groupId>
-    <artifactId>webook-notifier</artifactId>
-    <version>0.1</version>
+    <artifactId>webhook-notifier</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -15,6 +15,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.4</version>
+        </dependency>
+
         <dependency>
             <groupId>cd.go.plugin</groupId>
             <artifactId>go-plugin-api</artifactId>

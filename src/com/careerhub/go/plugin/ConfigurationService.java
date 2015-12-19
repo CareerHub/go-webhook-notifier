@@ -14,6 +14,7 @@ public class ConfigurationService {
         final Map<String, Object> fields = new HashMap<String, Object>();
         
         fields.put(Constants.PLUGIN_SETTINGS_CALLBACK_URL, createField("Callback URL", null, true, false, "0"));
+        fields.put(Constants.PLUGIN_SETTINGS_HEADERS, createField("Headers", null, false, false, "1"));
 		
         return fields;
 	}
@@ -26,12 +27,14 @@ public class ConfigurationService {
         if (callbackUrl == null || callbackUrl.isEmpty()) {
         	callbackFieldValidation.put("key", Constants.PLUGIN_SETTINGS_CALLBACK_URL);
         	callbackFieldValidation.put("message", String.format("'%s' is a required field", "Callback URL"));
-        } else if(!callbackUrl.startsWith("https://") || callbackUrl.startsWith("http://")) {
+        } else if(!callbackUrl.startsWith("https://") && !callbackUrl.startsWith("http://")) {
         	callbackFieldValidation.put("key", Constants.PLUGIN_SETTINGS_CALLBACK_URL);
         	callbackFieldValidation.put("message", String.format("'%s' must start with http or https", "Callback URL"));
         }
         
-        result.add(callbackFieldValidation);
+        if(!callbackFieldValidation.isEmpty()) {
+        	result.add(callbackFieldValidation);
+        }
         
         return result;
 	}

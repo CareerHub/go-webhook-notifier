@@ -11,6 +11,7 @@ public class Constants {
     public static final List<String> GO_SUPPORTED_VERSIONS = asList("1.0");
     
     public static final String PLUGIN_SETTINGS_CALLBACK_URL = "callback_url";
+    public static final String PLUGIN_SETTINGS_HEADERS = "headersMap";
     
     public static final String PLUGIN_SETTINGS_GET_CONFIGURATION = "go.plugin-settings.get-configuration";
     public static final String PLUGIN_SETTINGS_GET_VIEW = "go.plugin-settings.get-view";

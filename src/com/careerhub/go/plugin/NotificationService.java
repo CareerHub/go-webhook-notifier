@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -36,11 +37,15 @@ public class NotificationService {
         
         String json = JSONUtils.toJSON(info);
     	    	
-    	StringEntity jsonEntity =new StringEntity(json);
+    	StringEntity jsonEntity = new StringEntity(json);
      
     	request.setEntity(jsonEntity);
-        
-    	HttpResponse response = httpClient.execute(request);        
+
+		Header[] headers = settings.getHeaders();
+
+		request.setHeaders(headers);
+
+		HttpResponse response = httpClient.execute(request);
         
     	int statusCode = response.getStatusLine().getStatusCode();
 
