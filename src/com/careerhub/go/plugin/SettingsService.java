@@ -33,7 +33,9 @@ public class SettingsService {
         String callbackUrl = responseBodyMap.get(Constants.PLUGIN_SETTINGS_CALLBACK_URL);
         String headersJson = responseBodyMap.get(Constants.PLUGIN_SETTINGS_HEADERS);
 
-        LOGGER.warn(String.format("Got settings\r\ncallbackUrl: %s\r\nheaders: %s", callbackUrl, headersJson));
+        LOGGER.warn("Got settings");
+        LOGGER.warn(String.format("callbackUrl: %s", callbackUrl));
+        LOGGER.warn(String.format("headers: %s", headersJson));
 
         ArrayList<HeaderEntry> headers = new ArrayList<HeaderEntry>();
 
