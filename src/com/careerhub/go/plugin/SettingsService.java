@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.internal.LinkedTreeMap;
 import org.apache.commons.lang3.StringUtils;
 
 import com.careerhub.go.plugin.util.JSONUtils;
@@ -27,21 +28,17 @@ public class SettingsService {
         if (response.responseBody() == null || response.responseBody().trim().isEmpty()) {
             throw new RuntimeException("plugin is not configured. please provide plugin settings.");
         }
-        
-        Map<String, String> responseBodyMap = ((Map<String, String>) JSONUtils.fromJSON(response.responseBody()));
-        
-        String callbackUrl = responseBodyMap.get(Constants.PLUGIN_SETTINGS_CALLBACK_URL);
-        String headersJson = responseBodyMap.get(Constants.PLUGIN_SETTINGS_HEADERS);
 
-        LOGGER.warn("Got settings");
-        LOGGER.warn(String.format("callbackUrl: %s", callbackUrl));
-        LOGGER.warn(String.format("headers: %s", headersJson));
+        String settingsString = response.responseBody();
 
-        ArrayList<HeaderEntry> headers = new ArrayList<HeaderEntry>();
+        LOGGER.warn("Settings: " + settingsString);
+        Map<String, String> responseMap = (Map<String, String>)JSONUtils.fromJSON(settingsString);
 
-        if(!StringUtils.isBlank(headersJson)) {
-            headers = ((ArrayList<HeaderEntry>) JSONUtils.fromJSON(headersJson));
-        }
+        String callbackUrl = responseMap.get(Constants.PLUGIN_SETTINGS_CALLBACK_URL);
+        String headersMapString = responseMap.get(Constants.PLUGIN_SETTINGS_HEADERS);
+
+        HeaderEntry[] headers = (HeaderEntry[])JSONUtils.fromJSON(headersMapString, HeaderEntry[].class);
+
         return new PluginSettings(callbackUrl, headers);
     }
 

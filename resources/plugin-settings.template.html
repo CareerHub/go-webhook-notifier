@@ -1,10 +1,10 @@
 <div class="form_item_block">
     <label>Callback URL:<span class="asterisk">*</span></label>
-    <input type="text" ng-model="callback_url" ng-required="true"/>
-    <span class="form_error" ng-show="GOINPUTNAME[callback_url].$error.server">{{ GOINPUTNAME[callback_url].$error.server }}</span>
+    <input type="text" ng-model="callbackUrl" ng-required="true"/>
+    <span class="form_error" ng-show="GOINPUTNAME[callbackUrl].$error.server">{{ GOINPUTNAME[callbackUrl].$error.server }}</span>
 </div>
 <div class="form_item_block">
-    <table class="artifact">
+    <table class="">
         <thead>
         <tr>
             <th colspan="3">Headers</th>
@@ -18,10 +18,10 @@
         <tbody class="headers" ng-init>
             <tr ng-repeat="header in headers">
                 <td class="name_value_cell">
-                    <input ng-model="header.name" required="true" ng-required="true" style="margin-right: 6px;" class="form_input artifact_header" name="" size="30" type="text">
+                    <input ng-model="header.name" required="true" ng-required="true" style="margin-right: 6px;" class="form_input" name="" size="30" type="text">
                 </td>
                 <td class="name_value_cell">
-                    <input ng-model="header.value" class="form_input artifact_destination" name="" size="30" type="text">
+                    <input ng-model="header.value" class="form_input" name="" size="30" type="text">
                 </td>
                 <td class="name_value_cell">
                     <span class="icon_remove delete_parent" ng-click="removeHeader($index)"></span>
@@ -30,7 +30,7 @@
         </tbody>
     </table>
     <input id="headersMap" type="hidden" ng-model="headersMap" value="{{headersMap}}">
-    <a id="add_artifact" ng-click="addHeader()" class="action_icon skip_dirty_stop add_icon" title="" href="#"><span class="icon"></span><span>Add</span></a>
+    <a ng-click="addHeader()" class="action_icon skip_dirty_stop add_icon" title="" href="#"><span class="icon"></span><span>Add</span></a>
     <span class="form_error" ng-show="GOINPUTNAME[headersMap].$error.server">{{ GOINPUTNAME[headersMap].$error.server }}</span>
 </div>
 

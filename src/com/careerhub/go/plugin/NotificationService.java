@@ -1,22 +1,17 @@
 package com.careerhub.go.plugin;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.message.BasicNameValuePair;
 
 import com.careerhub.go.plugin.util.JSONUtils;
 
@@ -46,7 +41,7 @@ public class NotificationService {
      
     	request.setEntity(jsonEntity);
 
-		Header[] headers = settings.getHeaders();
+		Header[] headers = settings.getHttpHeaders();
 
 		request.setHeaders(headers);
 

@@ -8,26 +8,28 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class PluginSettings {
-    private final String callbackUrl;
-    private final ArrayList<HeaderEntry> headers;
+    private String callbackUrl;
+    private HeaderEntry[] headersMap;
 
-	public PluginSettings(String callbackUrl, ArrayList<HeaderEntry> headers) {
+	public PluginSettings(String callbackUrl, HeaderEntry[] headersMap) {
 		this.callbackUrl = callbackUrl;
-		this.headers = headers;
+		this.headersMap = headersMap;
 	}
 
 	public String getCallbackUrl() {
 		return callbackUrl;
 	}
 
-	public Header[] getHeaders() {
+	public Header[] getHttpHeaders() {
 		ArrayList<Header> headerList = new ArrayList<Header>();
 
-		for (Iterator<HeaderEntry> i = headers.iterator(); i.hasNext();) {
-			HeaderEntry headerEntry = i.next();
+		if(headersMap != null) {
+			for (int i = 0; i< headersMap.length; ++i) {
+				HeaderEntry headerEntry = headersMap[i];
 
-			Header header = new BasicHeader(headerEntry.getName(), headerEntry.getValue());
-			headerList.add(header);
+				Header header = new BasicHeader(headerEntry.getName(), headerEntry.getValue());
+				headerList.add(header);
+			}
 		}
 
 		Header[] headerArr = new Header[headerList.size()];
