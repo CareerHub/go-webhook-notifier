@@ -102,6 +102,7 @@ public class WebHookNotificationPluginImpl implements GoPlugin {
         	if(statusCode == 200) {
         		response.put("status", "success");
         	} else {
+                LOGGER.error(String.format("Webhook notification failed. Status Code: %d", statusCode));
         		response.put("status", "failure");        		
         	}
         } catch (Exception e) {

@@ -28,8 +28,10 @@ public class NotificationService {
         String callbackUrl = settings.getCallbackUrl();
         
         HttpClient httpClient = HttpClientBuilder.create().build();
-        HttpPost request = new HttpPost(callbackUrl);  
+        HttpPost request = new HttpPost(callbackUrl);
 
+		Header[] headers = settings.getHttpHeaders();
+		request.setHeaders(headers);
 		request.setHeader("Content-Type", "application/json");
 
 		// Could process json and parse processed json on
@@ -40,10 +42,6 @@ public class NotificationService {
     	StringEntity jsonEntity = new StringEntity(json);
      
     	request.setEntity(jsonEntity);
-
-		Header[] headers = settings.getHttpHeaders();
-
-		request.setHeaders(headers);
 
 		HttpResponse response = httpClient.execute(request);
         
